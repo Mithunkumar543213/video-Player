@@ -11,8 +11,7 @@ const uploadOnCloudinary=async(localFillePath)=>{
     try{
         if(!localFillePath) return null;
         //upload the file on cloudanary
-        const responce=await cloudinary.uploader.upload(localFillePath,{
-            resource_type:'auto'
+        const responce=await cloudinary.uploader.upload(localFillePath,{    //v2.uploder.upload            resource_type:'auto'
         })
         //file not uploaded
         console.log("file is not uploaded", responce.url)

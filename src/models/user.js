@@ -49,10 +49,11 @@ refreshToken:{
 });
 
 UserSchema.pre("save", async function(next){
-    if(!this.isModified("password",)) return next();
-
-     this.password=bcrypt. hash(this.password,10)
+// if(!this.isModified("password",)) return next();  //this is also a way to do same work
+    if(!this.isModified("password",)){
+     this.password=bcrypt.hash(this.password,10)
     next()
+    }
 })
 
 UserSchema.methods.isPasswordCorrect = async function(password){
@@ -85,3 +86,8 @@ UserSchema.methods.genrateRefreshToken= function(){
 
 
 export const User=mongoose.model("User",UserSchema);
+
+
+
+
+// model link :  https://app.eraser.io/workspace/NxP7l2agxHiaiXnm1tr9?origin=share

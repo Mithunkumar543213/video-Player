@@ -11,7 +11,7 @@ export { asyncHandler }
 
 
 // const asyncHandler = () => {}
-// const asyncHandler = (func) => () => {}
+// const asyncHandler = (func) => () => {}                   explaination
 // const asyncHandler = (func) => async () => {}
 
 
@@ -25,3 +25,5 @@ export { asyncHandler }
 //         })
 //     }
 // }
+
+// export { asyncHandler }
