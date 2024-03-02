@@ -11,7 +11,8 @@ const connectDB = async () => {
     console.log("mongoseDB ERROR :", error);
     process.exit(1);
   
-  
+
+
   }
 };
 export default connectDB;
