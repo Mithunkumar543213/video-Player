@@ -14,7 +14,8 @@ const uploadOnCloudinary=async(localFillePath)=>{
         const responce=await cloudinary.uploader.upload(localFillePath,{    //v2.uploder.upload            resource_type:'auto'
         })
         //file not uploaded
-        console.log("file is not uploaded", responce.url)
+        // console.log("file is  uploaded", responce.url)
+        fs.unlinkSync(localFillePath);
         return responce;
     }catch (error){
         fs.unlink(localFillePath)//remove the locally saved temporray file as the upload opration fot faild
