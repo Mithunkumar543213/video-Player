@@ -151,7 +151,7 @@ return res
     new ApiResponse(
         200,
         {
-            user:loginUser,accessToke,refreshToken
+            user:loggedInuser,accessToke,refreshToken
         },
         "user logIn Successfully"
     )
