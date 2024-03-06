@@ -4,6 +4,23 @@ import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudnary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+
+const genrateAccessTokenAndRefereshToken = async(userId)=>{
+    try{
+        const user = User.findById(userId);
+        const accessToke = user.genrateAccessToken();
+        const refreshToken= user.genrateRefreshToken();
+        user.refreshToken = refreshToken ;
+        await user.save({validateBeforeSave:true});
+
+        return {accessToke,refreshToken}
+
+
+    }catch(error){
+        throw new ApiError(500,"Something Went wrong while generating refresh and access token ")
+    }
+}
+
 const registerUser =asyncHandler(async(req,res)=>{
 
 //----------------All the condition for regitration-----------------
@@ -86,4 +103,62 @@ return res.status(201).json(
 
 })
 
-export {registerUser}
+const loginUser = asyncHandler(async(req,res)=>{
+    //take req from body-> data
+    //username or email
+    //find the user
+    //check  password
+    //access and referesh token
+    //send cookie
+    //allow the user the excess
+
+
+    const {username,email,password} = req.body ;
+
+    if(!(email || username)){
+        throw new ApiError(400,"Please enter the emailId") ;
+    }
+
+    const user = await  User.findOne({
+    $or:[{username},{email}]    
+    })
+
+    if(! user){
+        throw new ApiError(401,"User does not exises")
+    }
+
+const ispasswordVaild = await user.isPasswordCorrect(password)
+
+if(! ispasswordVaild){
+    throw new ApiError(404,"Invailed email or password")
+}
+
+const {accessToke,refreshToken} = genrateAccessTokenAndRefereshToken(user._id)
+
+const loggedInuser = await User.findById(user._id).select("-password -refreshToken")
+
+const options={
+    httpOnly:true,
+    secure: true
+
+}
+
+return res
+.status(200)
+.cookie("accessToken",accessToke,options)
+.cookie("refreshToken",refreshToken,options)
+.json(
+    new ApiResponse(
+        200,
+        {
+            user:loginUser,accessToke,refreshToken
+        },
+        "user logIn Successfully"
+    )
+)
+
+})
+
+export {registerUser,
+    loginUser
+}
