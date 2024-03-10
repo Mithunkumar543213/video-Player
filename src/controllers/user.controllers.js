@@ -1,8 +1,9 @@
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/user.model.js"
-import { uploadOnCloudinary } from "../utils/cloudnary.js"
+import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
 
 
 const genrateAccessTokenAndRefereshToken = async(userId)=>{
@@ -190,7 +191,60 @@ const loggedOut = asyncHandler(async(req,res)=>{
     
 })
 
+const refereshAccessToken = asyncHandler(async(req,res)=>{
+   const incomingRefreshToken = req.cookie.refreshToken  || req.body.refreshToken
+
+   if(!incomingRefreshToken){
+    throw new ApiError(402,"Invailed Accesss")
+   }
+
+   try {
+    const decodedRefreshToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+ 
+    if(!decodedRefreshToken){
+     throw new ApiError(401,"Invailed Refresh token")
+    }
+ 
+    const user = await User.findById(decodedRefreshToken?._id)
+ 
+    if(!user){
+     throw new ApiError(402,"Invailed User")
+    }
+ 
+    if(user?.refreshToken !== incomingRefreshToken ){
+     throw new ApiError(401 ,"Refresh token expaired are used")
+    }
+ 
+    const {accessToken,newRefreshToken}= await genrateAccessTokenAndRefereshToken(user?._id)
+ 
+    const options={
+             httpOnly:true,
+             secure:true
+    }
+ 
+   
+   return res
+   .status(200)
+   .cookie("accessToken",accessToken,options)
+   .cookie("refreshToken",newRefreshToken,options)
+   .json(
+       new ApiResponse(
+           200,
+           {
+               accessToken, refreshToken:newRefreshToken
+           },
+           "New Refresh token genrated"
+       )
+   )
+ 
+   } catch (error) {
+     throw new ApiError(401,"Unable to genrate refrash token")
+   }
+
+})
+
 export {registerUser,
     loginUser,
-    loggedOut
+    loggedOut,
+    refereshAccessToken
 }
