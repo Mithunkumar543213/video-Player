@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose"
-import Jwt, { TokenExpiredError }  from "jsonwebtoken";
+import jwt  from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 
 const UserSchema=new mongoose.Schema({
@@ -66,19 +66,20 @@ UserSchema.methods.genrateAccessToken= function(){
     //     data: 'foobar'
     //   }, 'secret', { expiresIn: '1h' });
 
-   return Jwt.sign({                          
+   return jwt.sign({                          
         _id:this._id,               
         email:this.email,
         username:this.username,
         fullName:this.fullName
 
-    },process.env.ACCESS_TOKEN_SECRET,{
+    },process.env.ACCESS_TOKEN_SECRET,
+    {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     }
     )
 }
 UserSchema.methods.genrateRefreshToken= function(){
-    return Jwt.sign({
+    return jwt.sign({
         _id:this._id,
          
     },process.env.REFRESH_TOKEN_SECRET,{

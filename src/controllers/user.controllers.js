@@ -6,14 +6,18 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 const genrateAccessTokenAndRefereshToken = async(userId)=>{
+    
     try{
-        const user = User.findById(userId);
-        const accessToke = user.genrateAccessToken();
+        const user = await User.findById(userId);
+    
+        const accessToken = user.genrateAccessToken();
+        
         const refreshToken= user.genrateRefreshToken();
-        user.refreshToken = refreshToken ;
-        await user.save({validateBeforeSave:true});
 
-        return {accessToke,refreshToken}
+        user.refreshToken = refreshToken ;
+        await user.save({validateBeforeSave: false});
+
+        return {accessToken,refreshToken}
 
 
     }catch(error){
@@ -110,13 +114,14 @@ const loginUser = asyncHandler(async(req,res)=>{
     //check  password
     //access and referesh token
     //send cookie
-    //allow the user the excess
+    //allow the user to excess
 
 
     const {username,email,password} = req.body ;
+    // console.log(username)
 
     if(!(email || username)){
-        throw new ApiError(400,"Please enter the emailId") ;
+        throw new ApiError(400,"Please enter the emailId or username") ;
     }
 
     const user = await  User.findOne({
@@ -133,9 +138,9 @@ if(! ispasswordVaild){
     throw new ApiError(404,"Invailed email or password")
 }
 
-const {accessToke,refreshToken} = genrateAccessTokenAndRefereshToken(user._id)
+const {accessToken,refreshToken} = await genrateAccessTokenAndRefereshToken(user._id)
 
-const loggedInuser = await User.findById(user._id).select("-password -refreshToken")
+const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
 const options={
     httpOnly:true,
@@ -145,13 +150,13 @@ const options={
 
 return res
 .status(200)
-.cookie("accessToken",accessToke,options)
+.cookie("accessToken",accessToken,options)
 .cookie("refreshToken",refreshToken,options)
 .json(
     new ApiResponse(
         200,
         {
-            user:loggedInuser,accessToke,refreshToken
+            user:loggedInUser,accessToken,refreshToken
         },
         "user logIn Successfully"
     )
@@ -159,6 +164,33 @@ return res
 
 })
 
+const loggedOut = asyncHandler(async(req,res)=>{
+     await User.findByIdAndUpdate(req.user._id ,
+        {
+        $unset:{
+            refreshToken:1  //this remove the field from document
+             }
+     },
+     {
+        new:true
+     }
+     )
+
+     const options={
+        httpOnly:true,
+        secure: true
+    
+    }  
+
+    return res
+              .status(200)
+              .clearCookie("accessToken",options)
+              .clearCookie("refreshToken",options)
+              .json(new ApiResponse(200,{},"User logged out"))
+    
+})
+
 export {registerUser,
-    loginUser
+    loginUser,
+    loggedOut
 }
