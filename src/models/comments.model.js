@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const commentSchema= new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
     content:{
         type:String,
         require:true,
@@ -8,11 +8,11 @@ const commentSchema= new mongoose.Schema({
     },
     video:{
         type:Schema.Types.ObjectId,
-        ref:"videos"
+        ref:"Video"
     },
     owner:{
          type:Schema.Typr.ObjectId,
-         ref:"users"
+         ref:"User"
     }
 
 },
@@ -20,4 +20,4 @@ const commentSchema= new mongoose.Schema({
     timestamps:true
 })
 
-export const comments=mongoose.model("comment",commentSchema)
+export const comments = mongoose.model("comment",commentSchema)
