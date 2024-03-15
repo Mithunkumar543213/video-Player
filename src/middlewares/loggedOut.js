@@ -9,7 +9,7 @@ try {
     const token=req.cookies?.accessToken  || req.header("Authorization")?.replace("Bearer " ,"")
 
     if(!token){
-        throw ApiError(401,"Unauthorized request")
+        throw  new ApiError(401,"Unauthorized request")
     }
 
     const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
@@ -17,12 +17,12 @@ try {
     const user = await User.findById(decodedToken._id).select("-password -refreshToken")
 
     if(!user){
-        throw ApiError(401,"Invailed acces token")
+        throw  new ApiError(401,"Invailed acces token")
     }
 
     req.user=user
     next()
 } catch (error) {
-    throw ApiError(401,error?.message || "Invaild access token")
+    throw new ApiError(401,error?.message || "Invaild access token")
 }
 })
