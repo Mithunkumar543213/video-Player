@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {publishAVideo} from "../controllers/video.controller.js"
+import {publishAVideo,updateVideo} from "../controllers/video.controller.js"
 import { upload } from "../middlewares/multer.js";
 import { verifyJWT } from "../middlewares/loggedOut.js";
 
@@ -36,6 +36,8 @@ router.route("/upload-video").post(upload.fields([
         maxCount:1
       }
 ]),publishAVideo)
+
+router.route("/update-video").post(upload.single("videoFile"),updateVideo)
 
 
 
