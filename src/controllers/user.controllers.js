@@ -28,7 +28,7 @@ const genrateAccessTokenAndRefereshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   //----------------All the condition for regitration-----------------
   //get user deatail from from frontant
-  //validation - not enpty
+  //validation - not empty
   //check if user is already exist  - username , email
   //check for image or avatar
   //upload them to cloudinary-avter
@@ -39,6 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //--------------------------------------------------------------------
 
   const { username, email, fullName, password } = req.body; //get user deatail from from frontant
+  // console.log(req.body)
 
   // if(username===""){
   //     throw new ApiError(400,"please enter the name");
@@ -46,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //-------------------------------------------------------
   //we can also check the all field in same way
   //for all the field we have to write same code multiple time
-  // }
+
   //-----------------------we can do same work using loop --------
   // const usernames = ["user1", "user2", "user3", ""];
 
@@ -62,11 +63,12 @@ const registerUser = asyncHandler(async (req, res) => {
   // }
   //----------------------------------------------------------------
 
+  //this all can be done in sigle code
+  //check the username ,email and password in enterd by user or not
+
   if (
     [username, email, fullName, password].some(
-      (
-        field //check the username ,email and password in enterd by user or not
-      ) => field?.trim() === ""
+      (field ) => field?.trim() === ""
     )
   ) {
     throw new ApiError(400, "All field are require");
@@ -82,6 +84,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
+  // console.log(avatarLocalPath )
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
   let coverImageLocalPath;
   if (
@@ -89,7 +92,7 @@ const registerUser = asyncHandler(async (req, res) => {
     Array.isArray(req.files.coverImage) &&
     req.files.coverImage.length > 0
   ) {
-    coverImageLocalPath = req.files.coverImage[0].path;
+    coverImageLocalPath = req.files.coverImage[0]?.path;
   }
 
   if (!avatarLocalPath) {

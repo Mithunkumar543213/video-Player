@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors"
 
 const app=express();
-app.use(express.json({limit:"20kb"}));   //for body json data
+app.use(express.json({limit:"200000kb"}));   //for body json data
 app.use(express.urlencoded({extended:true}));  //for url data
 app.use(express.static("public"));   //to serve static folder data
 app.use(cookieParser());     //to set or excess user browser cookie
