@@ -31,4 +31,4 @@ const playlistSchema= new mongoose.Schema({
 playlistSchema.plugin(mongooseAggregatePaginate)
 
 
-export const playlist =mongoose.model("playlist",playlistSchema)
+export const Playlist =mongoose.model("Playlist",playlistSchema)

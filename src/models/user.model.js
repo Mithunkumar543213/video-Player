@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 const UserSchema=new mongoose.Schema({
 username:{
     type:String,
-    required:true,
+    required:[true,'username is required'],
     unique:true,
     lowercase:true,
     trim:true,
@@ -20,16 +20,24 @@ email:{
 },
 fullName:{
     type:String,
-    required:true, 
+    required:[true,'fullname is required'], 
     trim:true,
     index:true
 },
 avatar:{
-    type:String, //cloudinary url
+    type: {
+        public_id: String,
+        url: String //cloudinary url
+    },
+    required: true
 
 },
 coverImage:{
-    type:String, //cloudinary url
+    type: {
+        public_id: String,
+        url: String //cloudinary url
+    },
+    required: true
 },
 watchHistory:[
     {
@@ -52,7 +60,7 @@ UserSchema.pre("save", async function(next){
 // if(!this.isModified("password",)) return next();  //this is also a way to do same work
     if(this.isModified("password",)){
      this.password = await bcrypt.hash(this.password,10)
-    next()
+     return next()
     }
 })
 
