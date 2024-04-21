@@ -8,30 +8,34 @@ cloudinary.config({
   api_secret:process.env.CLOUDINARY_API_SECRET
 }); 
 
-const uploadOnCloudinary=async(localFillePath)=>{
+const uploadOnCloudinary=async(localFilePath)=>{
     try{
-        if(!localFillePath) return null;
+        if(!localFilePath) return null;
         //upload the file on cloudanary
-        const responce=await cloudinary.uploader.upload(localFillePath,{resource_type:'auto'
+        const responce=await cloudinary.uploader.upload(localFilePath,{resource_type:'auto'
         })
         //file not uploaded
         // console.log("file is  uploaded", responce.url)
-        fs.unlinkSync(localFillePath);
+        fs.unlinkSync(localFilePath);
         return responce;
     }catch (error){
-        fs.unlink(localFillePath)//remove the locally saved temporray file as the upload opration fot faild
+        fs.unlink(localFilePath)//remove the locally saved temporray file as the upload opration fot faild
     }
 }
 
-const metaDataOnCloudinary = async (public_id) => {
+const deleteOnCloudinary = async (public_id, resource_type="image") => {
     try {
         if (!public_id) return null;
-        const response = await cloudinary.api.resource(public_id, { resource_type:"video" }); // Assuming resource_type is 'video'
-        return response;
-    } catch (error) {
-        console.error("Error fetching metadata from Cloudinary:", error);
-        return null;
-    }
-}
 
-export {uploadOnCloudinary ,metaDataOnCloudinary}
+        //delete file from cloudinary
+        const result = await cloudinary.uploader.destroy(public_id, {
+            resource_type: `${resource_type}`
+        });
+    } catch (error) {
+        return error;
+        console.log("delete on cloudinary failed", error);
+    }
+};
+
+
+export {uploadOnCloudinary ,deleteOnCloudinary};
