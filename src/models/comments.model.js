@@ -11,7 +11,7 @@ const commentSchema = new mongoose.Schema({
         ref:"Video"
     },
     owner:{
-         type:Schema.Typr.ObjectId,
+         type:Schema.Types.ObjectId,
          ref:"User"
     }
 
@@ -20,4 +20,4 @@ const commentSchema = new mongoose.Schema({
     timestamps:true
 })
 
-export const Comments = mongoose.model("Comment",commentSchema)
+export const Comment = mongoose.model("Comment",commentSchema )

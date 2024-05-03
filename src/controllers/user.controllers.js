@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const genrateAccessTokenAndRefereshToken = async (userId) => {
   try {
@@ -27,12 +28,12 @@ const genrateAccessTokenAndRefereshToken = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   //----------------All the condition for regitration-----------------
-  //get user deatail from from frontant
+  //get user deatail from frontant
   //validation - not empty
   //check if user is already exist  - username , email
   //check for image or avatar
   //upload them to cloudinary-avter
-  //create user object  - create enter in db
+  //create user object  - create entery in db
   //remove password and token from response
   //check for user creation
   //return res
@@ -106,13 +107,21 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avater file is required");
   }
 
+ 
+
   const user = await User.create({
     fullName,
     username: username.toLowerCase(),
     email,
     password,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    avatar:{
+       url:avatar.url,
+       public_id:avatar.public_id
+    } ,
+    coverImage: {
+      url:coverImage?.url ,
+      public_id:coverImage?.public_id
+    } || "",
   });
 
   const createdUser = await User.findById(user._id).select(

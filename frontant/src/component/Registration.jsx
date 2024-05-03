@@ -78,10 +78,10 @@ const SignUpForm = (props) => {
   return (
     <div className="h-screen overflow-y-auto bg-[#121212] text-white">
       <div className="mx-auto my-8 flex w-full max-w-sm flex-col px-4">
-        <div className="mx-auto inline-block w-16">
+        <div className="mx-auto inline-block w-40">
           {/* Your SVG */}
+          <img  className="h-36 w-40  "  src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/15/e3/67/15e3677d-6f69-9bba-a566-dd6e1ce23430/AppIcon-1x_U007ephone-0-85-220-0.png/512x512bb.jpg"  alt="" />
         </div>
-        <div className="mb-6 w-full text-center text-2xl font-semibold uppercase">Play</div>
         {/* Email Field */}
         <label htmlFor="email" className="mb-1 inline-block text-gray-300">Email*</label>
         <input
