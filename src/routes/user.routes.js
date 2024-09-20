@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { 
   registerUser,
-  loginUser,
+  logUser,
   loggedOut,
   refereshAccessToken,
   changeCurrentPassword,
@@ -30,7 +30,7 @@ router.route("/register").post(upload.fields([
     }
 ]), registerUser)
 
-router.route("/login").post(loginUser)
+router.route("/login").post(logUser)
 
 //secured routes
 router.route("/logout").post(verifyJWT,  loggedOut)

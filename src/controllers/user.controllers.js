@@ -40,19 +40,17 @@ const registerUser = asyncHandler(async (req, res) => {
   //--------------------------------------------------------------------
 
   const { username, email, fullName, password } = req.body; //get user deatail from from frontant
-  // console.log(req.body)
-
+  //console.log(username, email, fullName, password)
   // if(username===""){
   //     throw new ApiError(400,"please enter the name");
   //}
-  //-------------------------------------------------------
+  //------------------------------------------------------------------
   //we can also check the all field in same way
   //for all the field we have to write same code multiple time
 
-  //-----------------------we can do same work using loop --------
-  // const usernames = ["user1", "user2", "user3", ""];
+  //-----------------------we can do same work using loop -------------
 
-  // // Loop through the array
+  // // Loop through the array  --> we have also add all the in array
   // for (let i = 0; i < usernames.length; i++) {
   //     const username = usernames[i];
 
@@ -76,7 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const existedUser = await User.findOne({
-    //find the user by email or username ,we can also  find any one of this value
+    //find the user by email and username ,we can also  find any one of this value
     $or: [{ email }, { username }],
   });
 
@@ -86,7 +84,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // console.log(avatarLocalPath )
-  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
   let coverImageLocalPath;
   if (
     req.files &&
@@ -100,8 +97,8 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avater image is require");
   }
 
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  const avatar = await uploadOnCloudinary(avatarLocalPath);//upload avater on cloudinary
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);// upload coverImage on clodinary
 
   if (!avatar) {
     throw new ApiError(400, "Avater file is required");
@@ -128,6 +125,7 @@ const registerUser = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
+
   if (!createdUser) {
     throw new ApiError(500, "something went wrong while registering the user");
   }
@@ -137,7 +135,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "user registerd successfuly"));
 });
 
-const loginUser = asyncHandler(async (req, res) => {
+const logUser = asyncHandler(async (req, res) => {
   //take req from body-> data
   //username or email
   //find the user
@@ -147,7 +145,7 @@ const loginUser = asyncHandler(async (req, res) => {
   //allow the user to excess
 
   const { username, email, password } = req.body;
-  // console.log(username)
+  console.log(username)
 
   if (!(email || username)) {
     throw new ApiError(400, "Please enter the emailId or username");
@@ -170,7 +168,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } =
     await genrateAccessTokenAndRefereshToken(user._id);
 
-  const loggedInUser = await User.findById(user._id).select(
+  const loggedInUser = await User.findById(user._id).select(   //removwe the password and refress token from       the     response
     "-password -refreshToken"
   );
 
@@ -391,7 +389,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
   const channel = await User.aggregate([
     {
-      $match: {
+      $match: { 
         username: username?.toLowerCase(),
       },
     },
@@ -509,7 +507,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 
 export {
   registerUser,
-  loginUser,
+  logUser,
   loggedOut,
   refereshAccessToken,
   changeCurrentPassword,

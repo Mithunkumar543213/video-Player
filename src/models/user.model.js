@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose"
 import jwt  from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 
-const UserSchema=new mongoose.Schema({
+const UserSchema =  new mongoose.Schema({
 username:{
     type:String,
     required:[true,'username is required'],
@@ -54,7 +54,7 @@ refreshToken:{
 }
 },{
     timestamps:true
-});
+});   
 
 UserSchema.pre("save", async function(next){
 // if(!this.isModified("password",)) return next();  //this is also a way to do same work

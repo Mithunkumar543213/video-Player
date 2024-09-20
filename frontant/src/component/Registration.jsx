@@ -141,7 +141,7 @@ const SignUpForm = (props) => {
           onChange={handleCoverImageChange}
         />
         {/* Submit Button */}
-        <button className="bg-[#ae7aff] px-4 py-3 text-black" onClick={handleSubmit}>Sign up</button>
+        <button className="bg-[#ae7aff] px-4 py-3 text-black" onClick={handleSubmit}>SignUp</button>
       </div>
     </div>
   );
