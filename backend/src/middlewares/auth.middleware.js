@@ -6,13 +6,14 @@ import  jwt  from "jsonwebtoken";
 
 export const verifyJWT =asyncHandler(async(req,_,next)=>{
 try {
-    const token=req.cookies?.accessToken  || req.header("Authorization")?.replace("Bearer" ,"")
+    const token=req.cookies?.accessToken  || req.header("Authorization")?.replace("Bearer" ,"") //req.header("Authorization")?.replace("Bearer" ,"") is used for mobile application
 
     if(!token){
         throw  new ApiError(401,"Unauthorized request")
     }
 
-    const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET) 
+    const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+    //decodedToken will return the user object 
 
     const user = await User.findById(decodedToken._id).select("-password -refreshToken")
 

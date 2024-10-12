@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudnary.js";
+import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudnary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //--------------------------------------------------------------------
 
   const { username, email, fullName, password } = req.body; //get user deatail from from frontant
-  //console.log(username, email, fullName, password)
+
   // if(username===""){
   //     throw new ApiError(400,"please enter the name");
   //}
@@ -79,11 +79,11 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (existedUser) {
-    throw new ApiError(409, "username or email already exists ");
+    throw new ApiError(409, "Username or email already exists ");
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  // console.log(avatarLocalPath )
+  
   let coverImageLocalPath;
   if (
     req.files &&
@@ -194,7 +194,7 @@ const logUser = asyncHandler(async (req, res) => {
     );
 });
 
-const loggedOut = asyncHandler(async (req, res) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+const loggedOut = asyncHandler(async (req, res) => {                               
   await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -220,11 +220,14 @@ const loggedOut = asyncHandler(async (req, res) => {
 });
 
 const refereshAccessToken = asyncHandler(async (req, res) => {
+  //console.log("i am at this point")
   //this is the controller of that end point where user can refresh your expair access token and refresh token
-  const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken; //req.body.refreshToken for mobile device or which browser not support cookies like safari,firefox,Brave
+  const incomingRefreshToken = req.cookies?.refreshToken || req.body.refreshToken; //req.body.refreshToken for mobile device or which browser not support cookies like safari,firefox,Brave
+ 
+  console.log(incomingRefreshToken)
 
   if (!incomingRefreshToken) {
-    throw new ApiError(402, "Invailed Accesss");
+    throw new ApiError(402, "Access token not found");
   }
 
   try {
@@ -330,20 +333,34 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ApiError(402, "error while uploading the avatar");
   }
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-  const user = await User.findByIdAndUpdate(
+  if (!avatar.url) {
+    throw new ApiError(400, "Error while uploading avatar");
+}
+
+const user = await User.findById(req.user._id).select("avatar");
+const avatarToDelete = user.avatar.public_id;
+const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
-        avatar: avatar.url,
+        avatar: {
+          public_id:avatar.public_id,
+          url:avatar.url
+        }
       },
     },
     { new: true }
   ).select("-password");
 
+  if (avatarToDelete && updatedUser.avatar.public_id) {
+    await deleteOnCloudinary(avatarToDelete);
+}
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Avater is Updated successfully"));
+    .json(new ApiResponse(200, updatedUser, "Avater is Updated successfully"));
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
@@ -353,11 +370,8 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(402, "please reuploade the cover image");
   }
 
-  // delete the old cover image from cloudanary
-
-  const oldCoverImageUrl = user.req?.coverImage;
-
-  cloudinary.uploader.destroy(oldCoverImageUrl); // delete the image
+  const user = await User.findById(req.user._id).select("coverImage");
+  const coverImageToDelete = user.coverImage.public_id;
 
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
@@ -365,19 +379,26 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "error while uploading on cloudinary");
   }
 
-  const user = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
     {
       $set: {
-        coverImage: coverImage.url,
+        coverImage: {
+          public_id:coverImage.public_id,
+          url:coverImage.url
+        },
       },
     },
     { new: true }
   );
 
+  // delete the old cover image from cloudanary
+  if (coverImageToDelete  && updatedUser.coverImage.public_id) {
+    await deleteOnCloudinary(coverImageToDelete);
+}
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "cover image update successfully"));
+    .json(new ApiResponse(200, updatedUser , "cover image update successfully"));
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {

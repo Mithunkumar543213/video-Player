@@ -9,17 +9,14 @@ import { uploadOnCloudinary ,deleteOnCloudinary} from "../utils/cloudnary.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
-  //TODO: get all videos based on query, sort, pagination
-
+  // get all videos based on query, sort, pagination
   //Define your aggregation pipeline stages
   const pipeline = [];
-
   // for using Full Text based search you need to create a search index in mongoDB atlas
     // you can include field mapppings in search index eg.title, description, as well
     // Field mappings specify which fields within your documents should be indexed for text search.
     // this helps in seraching only in title, desc providing faster search results
     // here the name of search index is 'search-videos'
-
 
     if (query) {
       pipeline.push({
@@ -31,9 +28,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
               }
           }
       });
-  }
-
-  
+  }  
   // Match stage to filter based on userId or any other criteria if needed
   if (userId) {
     if(!isValidObjectId(userId)){
@@ -104,9 +99,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if ([title, description].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "title and description is required");
   }
-
-  
-
   //get video, upload to cloudinary, create video
 
   const videoFileLocalPath = req.files?.videoFile[0]?.path;
@@ -119,12 +111,12 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const videoFile = await uploadOnCloudinary(videoFileLocalPath);
   const thumbnailFile = await uploadOnCloudinary(thumbnailLocalPath);
 
-  if (!videoFile) {
+  if (!(videoFile && thumbnailFile)) {
     throw new ApiError(400, "video and thumbnail is not able to upload on cloudnary");
   }
   
 // Retrieve video metadata from Cloudinary to get the duration
-// const videoMetadata = await metaDataOnCloudinary(video.public_id);
+// const videoMetadata = await metaDataOnCloudinary(videoFile.public_id);
 // if (!videoMetadata) {
 //     throw new ApiError(400, "Unable to get information about the uploaded video");
 // }

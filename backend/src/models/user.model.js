@@ -34,7 +34,7 @@ avatar:{
 },
 coverImage:{
     type: {
-        public_id: String,
+        public_id: String,  // the public_id is adding to perform some opration cloudinary like delete the   image from cloudinary than the public_id is required that is genrated by the cloudinary
         url: String //cloudinary url
     },
     required: true
