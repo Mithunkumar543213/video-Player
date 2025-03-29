@@ -1,31 +1,15 @@
- import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
-import Registration from './component/Registration.jsx'
-import Login from './component/Login.jsx'
-import Home from './component/Home.jsx'
-import VideoListing from './component/VideoListing.jsx'
-import Layout from './Layout.jsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from 'react-redux';
+import store from "./store/store.js";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path='/' element={<Layout />}>
-      <Route path='' element={<Registration />} />
-      <Route path='login' element={<Login />} />
-      {/* <Route path='contact' element={<Contact />} />
-      <Route path='user/:userid' element={<User />} />
-      <Route 
-      loader={githubInfoLoader}
-      path='github' 
-      element={<Github />}
-       /> */}
-    </Route>
-  )
-)
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
+);

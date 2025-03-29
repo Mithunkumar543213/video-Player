@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { LoginPopup } from "../components";
+import { LoginPopup } from "../component";
 import { useNavigate } from "react-router-dom";
 
 function AuthLayout({ children, authentication }) {

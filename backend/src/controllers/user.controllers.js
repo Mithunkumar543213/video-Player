@@ -40,8 +40,8 @@ const registerUser = asyncHandler(async (req, res) => {
   //--------------------------------------------------------------------
 
   const { username, email, fullName, password } = req.body; //get user deatail from from frontant
-
-  // if(username===""){
+ console.log(req.body)
+   // if(username===""){
   //     throw new ApiError(400,"please enter the name");
   //}
   //------------------------------------------------------------------
