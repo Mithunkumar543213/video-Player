@@ -74,12 +74,12 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const existedUser = await User.findOne({
-    //find the user by email and username ,we can also  find any one of this value
+    //find the user by email and username ,we can also  find any one of the vale
     $or: [{ email }, { username }],
   });
 
   if (existedUser) {
-    throw new ApiError(409, "Username or email already exists ");
+    console.log(existedUser); throw new ApiError(409, "Username or email already exists ");
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
@@ -104,7 +104,6 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avater file is required");
   }
 
- 
 
   const user = await User.create({
     fullName,
@@ -127,7 +126,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
   if (!createdUser) {
-    throw new ApiError(500, "something went wrong while registering the user");
+    throw new ApiError(500, "something went wrong while registering the user! ");
   }
 
   return res
@@ -194,6 +193,7 @@ const logUser = asyncHandler(async (req, res) => {
     );
 });
 
+// logout controoler
 const loggedOut = asyncHandler(async (req, res) => {                               
   await User.findByIdAndUpdate(
     req.user._id,
@@ -220,7 +220,6 @@ const loggedOut = asyncHandler(async (req, res) => {
 });
 
 const refereshAccessToken = asyncHandler(async (req, res) => {
-  //console.log("i am at this point")
   //this is the controller of that end point where user can refresh your expair access token and refresh token
   const incomingRefreshToken = req.cookies?.refreshToken || req.body.refreshToken; //req.body.refreshToken for mobile device or which browser not support cookies like safari,firefox,Brave
  
