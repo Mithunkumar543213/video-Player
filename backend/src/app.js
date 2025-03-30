@@ -30,9 +30,9 @@ import commentRouter from "./routes/comment.routes.js"
 
 
 // routes decleartion
-app.use("/", (req, res) => {
-    res.send("API is working fine Mithun")
-})
+// app.use("/", (req, res) => {
+//     res.send("API is working fine Mithun")
+// })
 app.use("/api/v1/users",userRouter) 
 //http://localhost:8000/api/v1/users/register
 
