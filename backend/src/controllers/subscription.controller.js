@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 const toggleSubscription = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
     // TODO: toggle subscription
+    console.log(subscriberId);
 
     if (!isValidObjectId(subscriberId)) {
         throw new ApiError(400, "Invalid subscriberId");
