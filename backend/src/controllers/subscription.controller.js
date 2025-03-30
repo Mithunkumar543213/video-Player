@@ -6,17 +6,16 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 
 
 const toggleSubscription = asyncHandler(async (req, res) => {
-    const { subscriberId } = req.params;
+    const { channelId } = req.params;
     // TODO: toggle subscription
-    console.log(subscriberId);
 
-    if (!isValidObjectId(subscriberId)) {
-        throw new ApiError(400, "Invalid subscriberId");
+    if (!isValidObjectId(channelId)) {
+        throw new ApiError(400, "Invalid channelId");
     }
 
     const isSubscribed = await Subscription.findOne({
         subscriber: req.user?._id,
-        channel: subscriberId,
+        channel: channelId,
     });
 
     if (isSubscribed) {
@@ -35,7 +34,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
     await Subscription.create({
         subscriber: req.user?._id,
-        channel: subscriberId,
+        channel: channelId,
     });
 
     return res
@@ -51,20 +50,18 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
 // controller to return subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
-    let { subscriberId } = req.params;
-    console.log(subscriberId);
-    console.log("mi")
+    let { channelId } = req.params;
 
-    if (!isValidObjectId(subscriberId)) {
-        throw new ApiError(400, "Invalid subscriberId");
+    if (!isValidObjectId(channelId)) {
+        throw new ApiError(400, "Invalid channelId");
     }
 
-    subscriberId = new mongoose.Types.ObjectId(subscriberId);
+    channelId = new mongoose.Types.ObjectId(channelId);
 
     const subscribers = await Subscription.aggregate([
         {
             $match: {
-                channel: subscriberId,
+                channel: channelId,
             },
         },
         {
@@ -88,7 +85,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                                 $cond: {
                                     if: {
                                         $in: [
-                                            subscriberId,
+                                            channelId,
                                             "$subscribedToSubscriber.subscriber",
                                         ],
                                     },

@@ -11,22 +11,21 @@ router
     .route("/")
     .get(getAllVideos)
     .post(
-      verifyJWT,
+        verifyJWT,
         upload.fields([
             {
                 name: "videoFile",
-                maxCount: 1,
+                maxCount: 1
             },
             {
                 name: "thumbnail",
-                maxCount: 1,
-            },
-            
+                maxCount: 1
+            }
         ]),
         publishAVideo
     );
 
-    router
+router
     .route("/v/:videoId")
     .get(verifyJWT, getVideoById)
     .delete(verifyJWT, deleteVideo)
@@ -34,8 +33,4 @@ router
 
 router.route("/toggle/publish/:videoId").patch(verifyJWT, togglePublishStatus);
 
-
-
-
-
-export default router
+export default router;
