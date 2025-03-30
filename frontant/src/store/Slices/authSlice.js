@@ -84,25 +84,11 @@ export const changePassword = createAsyncThunk(
     }
 );
 
-export const getCurrentUser = createAsyncThunk("getCurrentUser", async (_, { rejectWithValue }) => {
-    try {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            return rejectWithValue("No access token found");
-        }
-
-        const response = await axiosInstance.get("/users/current-user", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        return response.data.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || "Failed to fetch user");
-    }
+export const getCurrentUser = createAsyncThunk("getCurrentUser", async () => {
+    const response = await axiosInstance.get("/users/current-user");
+    return response.data.data;
 });
+
 export const updateAvatar = createAsyncThunk("updateAvatar", async (avatar) => {
     try {
         const response = await axiosInstance.patch(

@@ -10,11 +10,10 @@ app.use(express.static("public"));   //to serve static folder data
 app.use(cookieParser());     //to set or excess user browser cookie
 
 app.use(cors({
-    origin: "https://videotube-mithunkumar543213s-projects.vercel.app",
+    origin:"http://localhost:5173",
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"], // Explicitly allow Authorization
-    methods: ["GET", "POST", "PATCH", "DELETE"], // Add methods if needed
-}));
+    })
+)
 app.use(morgan("dev")) //HTTP request logger middleware for node.js 
 
 // all the router import
@@ -30,10 +29,7 @@ import commentRouter from "./routes/comment.routes.js"
 
 
 
-// routes decleartion
-// app.use("/", (req, res) => {
-//     res.send("API is working fine Mithun")
-// })
+// routes decleartion 
 app.use("/api/v1/users",userRouter) 
 //http://localhost:8000/api/v1/users/register
 
