@@ -10,7 +10,7 @@ app.use(express.static("public"));   //to serve static folder data
 app.use(cookieParser());     //to set or excess user browser cookie
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:"https://videotube-sage.vercel.app",
     credentials: true,
     })
 )
