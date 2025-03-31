@@ -10,10 +10,20 @@ app.use(express.static("public"));   //to serve static folder data
 app.use(cookieParser());     //to set or excess user browser cookie
 
 app.use(cors({
-    origin:"https://video-player-phi-eight.vercel.app",
-    credentials: true,
-    })
-)
+    origin: "https://video-player-phi-eight.vercel.app",
+    credentials: true,  // Allow cookies for authentication
+    methods: ["GET", "POST", "PATCH", "DELETE"],  // Allow necessary HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"],  // Allow required headers
+}));
+
+// ✅ Add this middleware to manually set CORS headers for every response
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://video-player-phi-eight.vercel.app");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
 app.use(morgan("dev")) //HTTP request logger middleware for node.js 
 
 // all the router import
