@@ -6,7 +6,6 @@ const axiosInstance = axios.create({
     withCredentials: true,  // ✅ Required for sending cookies in cross-origin requests
 });
 
-axiosInstance.defaults.baseURL = BASE_URL;
-axiosInstance.defaults.withCredentials = true;
+
 
 export default axiosInstance;
