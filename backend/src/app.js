@@ -9,11 +9,16 @@ app.use(express.urlencoded({extended:true}));  //for url data
 app.use(express.static("public"));   //to serve static folder data
 app.use(cookieParser());     //to set or excess user browser cookie
 
+const allowedOrigins = [
+    "https://video-player-phi-eight.vercel.app",
+    "http://localhost:5173"
+];
+
 app.use(cors({
-    origin:"https://video-player-phi-eight.vercel.app",
+    origin: allowedOrigins,
     credentials: true,
-    })
-)
+    methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 app.use(morgan("dev")) //HTTP request logger middleware for node.js 
 
 // all the router import

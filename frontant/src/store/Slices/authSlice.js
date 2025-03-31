@@ -85,10 +85,11 @@ export const changePassword = createAsyncThunk(
 );
 
 export const getCurrentUser = createAsyncThunk("getCurrentUser", async () => {
-    const response = await axiosInstance.get("/users/current-user");
+   const response = await axiosInstance.get("/users/current-user", {
+        withCredentials: true, // ✅ Ensures cookies are sent
+    });
     return response.data.data;
 });
-
 export const updateAvatar = createAsyncThunk("updateAvatar", async (avatar) => {
     try {
         const response = await axiosInstance.patch(
