@@ -60,6 +60,7 @@ function SignUp() {
                                     control={control}
                                     className="w-full h-28 object-cover border-none border-slate-900"
                                     cameraIcon
+                                    isRequired={false}
                                 />
                                 <div className="text-sm absolute right-2 bottom-2 hover:text-purple-500 cursor-default">
                                     cover Image
@@ -72,40 +73,11 @@ function SignUp() {
                                     className="object-cover rounded-full h-20 w-20 outline-none"
                                     cameraIcon={true}
                                     cameraSize={20}
+                                    isRequired={true}
                                 />
                             </div>
 
-                            {/* <label
-                                htmlFor="avatar"
-                                className="cursor-pointer"
-                            >
-                                <div className="absolute h-24 w-24 left-2 bottom-2 flex justify-center items-center">
-                                    <img
-                                        src={avatarPreview}
-                                        className=" object-cover w-full h-full border-2 border-double rounded-full"
-                                    />
-                                    <FaCamera
-                                        className="absolute hover:text-purple-500"
-                                        size={20}
-                                    />
-                                </div>
-                                <Controller
-                                    name="avatar"
-                                    control={control}
-                                    render={({ field: { onChange } }) => (
-                                        <input
-                                            id="avatar"
-                                            type="file"
-                                            className="hidden"
-                                            accept="image/png, image/jpeg"
-                                            onChange={(e) => {
-                                                onChange(handleAvatarChange(e));
-                                            }}
-                                        />
-                                    )}
-                                    rules={{ required: "avatar is required" }}
-                                />
-                            </label> */}
+                           
                         </div>
                         {errors.avatar && (
                             <div className="text-red-500">
