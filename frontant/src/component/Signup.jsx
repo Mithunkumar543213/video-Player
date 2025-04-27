@@ -20,13 +20,13 @@ function SignUp() {
     const loading = useSelector((state) => state.auth?.loading);
 
     const submit = async (data) => {
-        const response =  dispatch(createAccount(data));
+        const response = await dispatch(createAccount(data));
         console.log(response)
 
         if (response?.payload?.success) {
             const username = data?.username;
             const password = data?.password;
-            const loginResult = dispatch(
+            const loginResult = await dispatch(
                 userLogin({ username, password })
             );
 
