@@ -41,7 +41,7 @@ app.use("/api/v1/users",userRouter)
 app.use("/api/v1/video",videoRouter)
 //http:localhost:8000/api/v1/videos/-->
 
-app.use("/api/v1/playlists",playlistRouter)
+app.use("/api/v1/playlist",playlistRouter)
 app.use("/api/v1/tweet",tweetRouter)
 app.use("/api/v1/subscriptions",subscriptionRouter)
 app.use("/api/v1/likes",likeRouter)
