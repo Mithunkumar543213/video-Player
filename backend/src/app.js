@@ -17,7 +17,7 @@ const allowedOrigins = [
 app.use(cors({
     origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }));
 app.use(morgan("dev")) //HTTP request logger middleware for node.js 
 
